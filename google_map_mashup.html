@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Coding for GOOD // API Example 2 - Google Maps</title>
+    <link rel="stylesheet" type="text/css" href="http://reset5.googlecode.com/hg/reset.min.css">
+		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false">
+		</script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js">
+		</script>
+		<style type ="text/css">
+			html, body { height: 100%; }
+			#target { height: 500px; }
+		</style>
+		
+		<script type="text/javascript">
+		
+	  $(document).ready(function() {
+			
+		  var lat = 34.0195683;
+			var lng = -118.3076202;
+			var myHighSchool = new google.maps.LatLng(lat, lng);
+			var MyHighSchoolMarker = null;
+			
+			var mapOptions = {
+				zoom: 4,
+				center: myHighSchool,
+				mapTypeId: google.maps.MapTypeId.ROADMAP
+			}
+	
+			var myMap = new google.maps.Map(document.getElementById('target'), mapOptions);
+			
+			
+			myHighSchoolMarker = new google.maps.Marker(
+				 {
+					 position: myHighSchool,
+					 map: myMap,
+					 title: 'Foshay Learning Center (Los Angeles, California)'
+					}
+				);
+				
+			grabImage(myMap, lat, lng);
+			
+		});
+				
+		function grabImage(map, lat, lng) {  				
+			var instagramUrl = "https://api.instagram.com/v1/media/search?" + "lat=" + lat + "&lng=" + lng + "&access_token=465492359.f59def8.469cb23f0e45446f90e4841173b06664"
+			
+			$.ajax({
+				url: instagramUrl,
+				dataType: 'jsonp',
+				crossDomain: true,
+				success: function(response) {
+					
+					var image = response.data[0].images.thumbnail.url
+					showMeInfo(map, image)
+				}
+			});
+			
+		}
+		
+			
+			function showMeInfo(map, image) {
+	
+				var myHighSchoolInfoWindow = new google.maps.InfoWindow({
+						content: "<img src='" + image + "'/>"
+					});
+	
+				google.maps.event.addListener(myHighSchoolMarker, 'click', function(){
+						myHighSchoolInfoWindow.open(map, myHighSchoolMarker);
+					});
+				}
+				
+	</script>
+  </head>
+  <body>
+		<div id="target"></div>
+  </body>
+</html>
